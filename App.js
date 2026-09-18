@@ -11,6 +11,7 @@ import {
 } from "react-native-paper";
 import myColors from "./assets/colors.json";
 import myColorsDark from "./assets/colorsDark.json";
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function App() {
   const [isSwitchOn, setIsSwitchOn] = useState(false); // variável para controle do darkMode
@@ -26,11 +27,26 @@ export default function App() {
   });
 
   // load darkMode from AsyncStorage
-  async function loadDarkMode() {}
+  async function loadDarkMode() {
+    try {
+      const value = await AsyncStorage.getItem('@colorMode')
+      if(value !== null) {
+        setIsSwitchOn(JSON.parse(value))
+      }
+    } catch (e) {
+      
+    }
+  }
 
   // darkMode switch event
   async function onToggleSwitch() {
-    setIsSwitchOn(!isSwitchOn);
+    try {
+      const nextValue = !isSwitchOn
+      setIsSwitchOn(nextValue)
+      await AsyncStorage.setItem('@colorMode', JSON.stringify(nextValue))
+    } catch (e) {
+
+    }
   }
 
   // get location (bottao capturar localização)
